@@ -2,9 +2,8 @@ import requests, urllib
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
 
-APP_ACCESS_TOKEN = '5629236876.1cc9688.86db895c038043b5960dc2949785299a'
-#Token Owner : AVinstaBot.main
-#Sandbox Users : AVinstaBot.test0, AVinstaBot.test1, AVinstaBot.test2...... AVinstaBot.test10
+APP_ACCESS_TOKEN = '1678122958.23790cc.cba34129144a44c9b87f4186ad2bea48'
+
 
 BASE_URL = 'https://api.instagram.com/v1/'
 
@@ -247,7 +246,7 @@ def start_bot():
            insta_username = raw_input("Enter the username of the user: ")
            get_like_list(insta_username)
         elif choice=="f":
-        
+
             exit()
         else:
             print "wrong choice"
