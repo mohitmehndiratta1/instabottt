@@ -2,7 +2,7 @@ import requests, urllib
 from textblob import TextBlob
 from textblob.sentiments import NaiveBayesAnalyzer
 
-APP_ACCESS_TOKEN = '1678122958.23790cc.cba34129144a44c9b87f4186ad2bea48'
+APP_ACCESS_TOKEN = '1678122958.0a90a89.4c5e809bf638428c98f5fab350eda3b4'
 
 
 BASE_URL = 'https://api.instagram.com/v1/'
