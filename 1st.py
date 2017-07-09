@@ -7,11 +7,13 @@ APP_ACCESS_TOKEN = '1678122958.23790cc.cba34129144a44c9b87f4186ad2bea48'
 
 BASE_URL = 'https://api.instagram.com/v1/'
 
+
 '''
 Function declaration to get your own info
 '''
 
 
+#defining the self info
 def self_info():
     request_url = (BASE_URL + 'users/self/?access_token=%s') % (APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
@@ -29,13 +31,15 @@ def self_info():
         print 'Status code other than 200 received!'
 
 
+
 '''
 Function declaration to get the ID of a user by username
 '''
 
 
-def get_user_id(insta_username):
-    request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (insta_username, APP_ACCESS_TOKEN)
+
+def get_user_id(mmehndiratta):
+    request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (mmehndiratta, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
     user_info = requests.get(request_url).json()
 
@@ -49,13 +53,15 @@ def get_user_id(insta_username):
         exit()
 
 
+
 '''
 Function declaration to get the info of a user by username
 '''
 
 
-def get_user_info(insta_username):
-    user_id = get_user_id(insta_username)
+
+def get_user_info(mmehndiratta):
+    user_id = get_user_id(mmehndiratta)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -75,9 +81,11 @@ def get_user_info(insta_username):
         print 'Status code other than 200 received!'
 
 
+
 '''
 Function declaration to get your recent post
 '''
+
 
 
 def get_own_post():
@@ -97,13 +105,15 @@ def get_own_post():
         print 'Status code other than 200 received!'
 
 
+
 '''
 Function declaration to get the recent post of a user by username
 '''
 
 
-def get_user_post(insta_username):
-    user_id = get_user_id(insta_username)
+
+def get_user_post(mmehndiratta):
+    user_id = get_user_id(mmehndiratta)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -122,12 +132,14 @@ def get_user_post(insta_username):
     else:
         print 'Status code other than 200 received!'
 
+
 '''
 Function declaration to get the ID of the recent post of a user by username
 '''
 
-def get_post_id(insta_username):
-    user_id = get_user_id(insta_username)
+
+def get_post_id(mmehndiratta):
+    user_id = get_user_id(mmehndiratta)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -147,13 +159,15 @@ def get_post_id(insta_username):
 
 
 
+
 '''
 Function declaration to like the recent post of a user
 '''
 
 
-def like_a_post(insta_username):
-    media_id = get_post_id(insta_username)
+
+def like_a_post(mmehndiratta):
+    media_id = get_post_id(mmehndiratta)
     request_url = (BASE_URL + 'media/%s/likes') % (media_id)
     payload = {"access_token": APP_ACCESS_TOKEN}
     print 'POST request url : %s' % (request_url)
@@ -164,13 +178,14 @@ def like_a_post(insta_username):
         print 'Your like was unsuccessful. Try again!'
 
 
+
 '''
 Function declaration to make a comment on the recent post of the user
 '''
 
 
-def post_a_comment(insta_username):
-    media_id = get_post_id(insta_username)
+def post_a_comment(mmehndiratta):
+    media_id = get_post_id(mmehndiratta)
     comment_text = raw_input("Your comment: ")
     payload = {"access_token": APP_ACCESS_TOKEN, "text" : comment_text}
     request_url = (BASE_URL + 'media/%s/comments') % (media_id)
@@ -183,12 +198,30 @@ def post_a_comment(insta_username):
     else:
         print "Unable to add comment. Try again!"
 
+
+# Function declaration to get the liked by user
+
+
+def liked_by_user(mmehndiratta):
+    media_id = get_post_id(mmehndiratta)
+    print "Get request URL:" + ((BASE_URL + "users/self/media/liked?access_token=%s") % (APP_ACCESS_TOKEN))
+    liked = requests.get((BASE_URL + "users/self/media/liked?access_token=%s") % (APP_ACCESS_TOKEN)).json()
+    print liked["data"][0]["id"]
+
+# Function declaration to get the comments
+
+def get_the_comments(mmehndiratta):
+    media_id = get_post_id(mmehndiratta)
+    print "Get request URL:" + ((BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN))
+    comments = requests.get((BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN)).json()
+    print comments["data"]
+
 '''
 Function declaration to make delete negative comments from the recent post
 '''
 
-def delete_negative_comment(insta_username):
-    media_id = get_post_id(insta_username)
+def delete_negative_comment(mmehndiratta):
+    media_id = get_post_id(mmehndiratta)
     request_url = (BASE_URL + 'media/%s/comments/?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
     comment_info = requests.get(request_url).json()
@@ -229,7 +262,10 @@ def start_bot():
         print "d.Get the recent post of a user by username\n"
         print "e.Get a list of people who have liked the recent post of a user\n"
         print "f.Like the recent post of a user\n"
-
+        print "g.Get a list of comments on the recent post of a user\n"
+        print "h.Make a comment on the recent post of a user\n"
+        print "i.Delete negative comments from the recent post of a user\n"
+        print "j.Exit"
 
         choice = raw_input("Enter you choice: ")
         if choice == "a":
@@ -244,9 +280,20 @@ def start_bot():
             get_user_post(insta_username)
         elif choice=="e":
            insta_username = raw_input("Enter the username of the user: ")
-           get_like_list(insta_username)
+           liked_by_user(insta_username)
         elif choice=="f":
-
+           insta_username = raw_input("Enter the username of the user: ")
+           like_a_post(insta_username)
+        elif choice=="g":
+           insta_username = raw_input("Enter the username of the user: ")
+           get_the_comments(insta_username)
+        elif choice=="h":
+           insta_username = raw_input("Enter the username of the user: ")
+           post_a_comment(insta_username)
+        elif choice=="i":
+           insta_username = raw_input("Enter the username of the user: ")
+           delete_negative_comment(insta_username)
+        elif choice == "j":
             exit()
         else:
             print "wrong choice"
