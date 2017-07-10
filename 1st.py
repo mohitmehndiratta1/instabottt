@@ -38,8 +38,8 @@ Function declaration to get the ID of a user by username
 
 
 
-def get_user_id(mmehndiratta):
-    request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (mmehndiratta, APP_ACCESS_TOKEN)
+def get_user_id(insta_username):
+    request_url = (BASE_URL + 'users/search?q=%s&access_token=%s') % (insta_username, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
     user_info = requests.get(request_url).json()
 
@@ -60,8 +60,8 @@ Function declaration to get the info of a user by username
 
 
 
-def get_user_info(mmehndiratta):
-    user_id = get_user_id(mmehndiratta)
+def get_user_info(insta_username):
+    user_id = get_user_id(insta_username)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -112,8 +112,8 @@ Function declaration to get the recent post of a user by username
 
 
 
-def get_user_post(mmehndiratta):
-    user_id = get_user_id(mmehndiratta)
+def get_user_post(insta_username):
+    user_id = get_user_id(insta_username)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -138,8 +138,8 @@ Function declaration to get the ID of the recent post of a user by username
 '''
 
 
-def get_post_id(mmehndiratta):
-    user_id = get_user_id(mmehndiratta)
+def get_post_id(insta_username):
+    user_id = get_user_id(insta_username)
     if user_id == None:
         print 'User does not exist!'
         exit()
@@ -166,8 +166,8 @@ Function declaration to like the recent post of a user
 
 
 
-def like_a_post(mmehndiratta):
-    media_id = get_post_id(mmehndiratta)
+def like_a_post(insta_username):
+    media_id = get_post_id(insta_username)
     request_url = (BASE_URL + 'media/%s/likes') % (media_id)
     payload = {"access_token": APP_ACCESS_TOKEN}
     print 'POST request url : %s' % (request_url)
@@ -184,8 +184,8 @@ Function declaration to make a comment on the recent post of the user
 '''
 
 
-def post_a_comment(mmehndiratta):
-    media_id = get_post_id(mmehndiratta)
+def post_a_comment(insta_username):
+    media_id = get_post_id(insta_username)
     comment_text = raw_input("Your comment: ")
     payload = {"access_token": APP_ACCESS_TOKEN, "text" : comment_text}
     request_url = (BASE_URL + 'media/%s/comments') % (media_id)
@@ -202,16 +202,16 @@ def post_a_comment(mmehndiratta):
 # Function declaration to get the liked by user
 
 
-def liked_by_user(mmehndiratta):
-    media_id = get_post_id(mmehndiratta)
+def liked_by_user(insta_username):
+    media_id = get_post_id(insta_username)
     print "Get request URL:" + ((BASE_URL + "users/self/media/liked?access_token=%s") % (APP_ACCESS_TOKEN))
     liked = requests.get((BASE_URL + "users/self/media/liked?access_token=%s") % (APP_ACCESS_TOKEN)).json()
     print liked["data"][0]["id"]
 
 # Function declaration to get the comments
 
-def get_the_comments(mmehndiratta):
-    media_id = get_post_id(mmehndiratta)
+def get_the_comments(insta_username):
+    media_id = get_post_id(insta_username)
     print "Get request URL:" + ((BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN))
     comments = requests.get((BASE_URL + "media/%s/comments?access_token=%s") % (media_id, APP_ACCESS_TOKEN)).json()
     print comments["data"]
@@ -220,8 +220,8 @@ def get_the_comments(mmehndiratta):
 Function declaration to make delete negative comments from the recent post
 '''
 
-def delete_negative_comment(mmehndiratta):
-    media_id = get_post_id(mmehndiratta)
+def delete_negative_comment(insta_username):
+    media_id = get_post_id(insta_username)
     request_url = (BASE_URL + 'media/%s/comments/?access_token=%s') % (media_id, APP_ACCESS_TOKEN)
     print 'GET request url : %s' % (request_url)
     comment_info = requests.get(request_url).json()
@@ -249,6 +249,40 @@ def delete_negative_comment(mmehndiratta):
             print 'There are no existing comments on the post!'
     else:
         print 'Status code other than 200 received!'
+#hjfhjfhjf
+def media_found(latitude,longitude):
+
+    if latitude == "" or longitude == "":
+        print "enter valid latitude and longitute"
+        exit()
+
+    else:
+        request_url=BASE_URL+'media/search?lat=%s&lng=%s&access_token=%s' %(latitude,longitude,APP_ACCESS_TOKEN)
+        media_info = requests.get(request_url).json()
+        if media_info['meta']['code']==200:
+            length = len(media_info['data'])
+            if len(media_info['data']):
+                i=0
+                k=0
+                length=len(media_info['data'])
+                while(length):
+                    if media_info['data'][i]['type']=="image" and ( media_info['data'][i]['caption']['text']=="#flood" or media_info['data'][i]['caption']['text']=="#earthquake" ):
+                        image_name = media_info['data'][i]['id'] + '.jpeg'
+                        image_url = media_info['data'][i]['images']['standard_resolution']['url']
+                        urllib.urlretrieve(image_url, image_name)
+                        print 'Your image has been downloaded! and image id is %s' % (media_info['data'][i]['id'])
+                        k=k+1
+                    else:
+                        print "No image of calamity is found"
+                    length=length-1
+                    i=i+1
+                print "total no image found=%s" %(k)
+
+            else:
+                print "No media found in the searched location"
+
+        else:
+            print 'Status code other than 200 received!'
 
 
 def start_bot():
@@ -265,7 +299,9 @@ def start_bot():
         print "g.Get a list of comments on the recent post of a user\n"
         print "h.Make a comment on the recent post of a user\n"
         print "i.Delete negative comments from the recent post of a user\n"
+        print "k.select clamity"
         print "j.Exit"
+
 
         choice = raw_input("Enter you choice: ")
         if choice == "a":
@@ -293,9 +329,12 @@ def start_bot():
         elif choice=="i":
            insta_username = raw_input("Enter the username of the user: ")
            delete_negative_comment(insta_username)
+        elif choice=="k":
+            latitude = raw_input("Enter the latitude")
+            longitude = raw_input("Enter the longitude")
+            media_found(latitude, longitude)
         elif choice == "j":
             exit()
         else:
             print "wrong choice"
-
 start_bot()
